@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Personal Finance Chatbot</title>
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: url('https://images.unsplash.com/photo-1579621970588-a35d0e7ab9b6') no-repeat center center/cover;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .header {
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 20px 40px;
+        border-radius: 12px;
+        text-align: center;
+        max-width: 600px;
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .header h1 {
+        font-size: 1.8rem;
+        margin: 0;
+    }
+
+    .header span {
+        font-size: 2rem;
+    }
+
+    p {
+        margin: 15px 0;
+        font-size: 1rem;
+    }
+
+    .buttons {
+        margin-top: 30px;
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .btn {
+        padding: 12px 25px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+        font-weight: bold;
+        transition: 0.3s;
+        color: white;
+    }
+    a {
+    text-decoration: none; /* Removes underline */
+}
+
+.btn {
+    display: inline-block; /* Makes <a> behave like a button */
+    text-align: center;
+}
+
+
+    .nlu { background-color: #4CAF50; }
+    .qa { background-color: #2196F3; }
+    .budget { background-color: #FF9800; }
+    .spending { background-color: #9C27B0; }
+
+    .btn:hover {
+        opacity: 0.85;
+        transform: scale(1.05);
+    }
+</style>
+</head>
+<body>
+
+<div class="header">
+    <h1><span>💰</span> Personal Finance Chatbot:</h1>
+    <p>Intelligent Guidance for Savings, Taxes, and Investments</p>
+</div>
+
+<p style="color: white; font-size: 1.1rem; margin-top: 20px;">Select one of the functions below</p>
+
+<div class="buttons">
+    <a href="/nlu" class="btn nlu">NLU Analysis</a>
+    <a href="/qa" class="btn qa">Q&A</a>
+    <a href="/budget-summary" class="btn budget">Budget Summary</a>
+    <a href="/spending-insights" class="btn spending">Spending Insights</a>
+</div>
+
+</body>
+</html>

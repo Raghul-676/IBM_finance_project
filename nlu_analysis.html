@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NLU Analysis</title>
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: url('https://images.unsplash.com/photo-1579621970588-a35d0e7ab9b6') no-repeat center center/cover;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding-top: 60px;
+    }
+
+    .header {
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 20px 40px;
+        border-radius: 12px;
+        text-align: center;
+        max-width: 600px;
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .header h1 {
+        font-size: 1.8rem;
+        margin: 0;
+    }
+
+    .header span {
+        font-size: 2rem;
+    }
+
+    .content {
+        margin-top: 30px;
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+        max-width: 700px;
+        width: 90%;
+        box-sizing: border-box;
+    }
+
+    textarea {
+        width: 100%;
+        height: 200px;
+        font-size: 1rem;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        resize: none;
+        box-sizing: border-box;
+        margin-bottom: 15px;
+    }
+
+    .btn {
+        background-color: #FF9800;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+        font-weight: bold;
+        color: white;
+        transition: 0.3s;
+    }
+
+    .btn:hover {
+        opacity: 0.85;
+        transform: scale(1.05);
+    }
+
+    pre {
+        margin-top: 20px;
+        padding: 15px;
+        background-color: #f5f5f5;
+        border-radius: 8px;
+        overflow-x: auto;
+        max-height: 400px;
+    }
+</style>
+</head>
+<body>
+
+<div class="header">
+    <h1><span>🧠</span> NLU Analysis</h1>
+</div>
+
+<div class="content">
+    <textarea id="jsonInput" placeholder='Paste your JSON here (e.g., {"text": "Your text here"})'></textarea>
+    <button class="btn" onclick="sendData()">Send</button>
+    <pre id="output"></pre>
+</div>
+
+<script>
+async function sendData() {
+    const input = document.getElementById('jsonInput').value;
+
+    let jsonData;
+    try {
+        jsonData = JSON.parse(input);
+    } catch (err) {
+        alert("Invalid JSON!");
+        return;
+    }
+
+    const response = await fetch('/generate-nlu', {  // Make sure your Flask route matches this
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(jsonData)
+    });
+
+    const result = await response.json();
+    if(result.sentiment || result.error) {
+        document.getElementById('output').textContent = JSON.stringify(result, null, 4);
+    } else {
+        document.getElementById('output').textContent = "Error: No valid output.";
+    }
+}
+</script>
+
+</body>
+</html>

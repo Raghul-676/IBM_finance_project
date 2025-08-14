@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Share Market Q&A</title>
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: url('https://images.unsplash.com/photo-1579621970588-a35d0e7ab9b6') no-repeat center center/cover;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding-top: 40px;
+    }
+
+    .header {
+        background-color: rgba(255, 255, 255, 0.85);
+        padding: 20px 40px;
+        border-radius: 12px;
+        text-align: center;
+        max-width: 600px;
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .header h1 {
+        font-size: 1.8rem;
+        margin: 0;
+    }
+
+    .header span {
+        font-size: 2rem;
+    }
+
+    .content {
+        margin-top: 20px;
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+        max-width: 700px;
+        width: 90%;
+        box-sizing: border-box;
+    }
+
+    input, textarea {
+        width: 100%;
+        padding: 12px;
+        font-size: 1rem;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-sizing: border-box;
+    }
+
+    textarea {
+        height: 180px;
+        resize: none;
+    }
+
+    .btn {
+        background-color: #FF9800;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+        font-weight: bold;
+        color: white;
+        transition: 0.3s;
+    }
+
+    .btn:hover {
+        opacity: 0.85;
+        transform: scale(1.05);
+    }
+
+    pre {
+        margin-top: 20px;
+        padding: 15px;
+        background-color: #f5f5f5;
+        border-radius: 8px;
+        overflow-x: auto;
+        max-height: 400px;
+    }
+</style>
+</head>
+<body>
+
+<div class="header">
+    <h1><span>📊</span>Q&A page</h1>
+</div>
+
+<div class="content">
+    <form id="userForm">
+        <input type="number" id="income" placeholder="Income" required />
+        <input type="number" id="age" placeholder="Age" required />
+        <input type="text" id="risk_tolerance" placeholder="Risk Tolerance (e.g., Low, Medium, High)" required />
+        <input type="text" id="financial_goals" placeholder="Financial Goals" required />
+        <textarea id="jsonInput" placeholder='Paste your JSON query here...'></textarea>
+        <button type="submit" class="btn">Send</button>
+    </form>
+    <pre id="output"></pre>
+</div>
+
+<script>
+const output = document.getElementById('output');
+const conversation = []; // To store conversation history
+
+document.getElementById('userForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    // Collect user info
+    const income = document.getElementById('income').value;
+    const age = document.getElementById('age').value;
+    const risk_tolerance = document.getElementById('risk_tolerance').value;
+    const financial_goals = document.getElementById('financial_goals').value;
+
+    // Parse persona + query JSON
+    let jsonData;
+    try {
+        jsonData = JSON.parse(document.getElementById('jsonInput').value);
+    } catch(err) {
+        alert("Invalid JSON! Please provide a valid persona and query.");
+        return;
+    }
+
+    const persona = jsonData.persona || "User Persona";
+    const queryText = jsonData.query || "";
+
+    // Combine everything into one payload (backend expects this format)
+    const payload = {
+        persona: persona,
+        query: queryText,
+        income: parseFloat(income),
+        age: parseInt(age),
+        risk_tolerance: risk_tolerance,
+        financial_goals: financial_goals
+    };
+
+    output.textContent = "Generating response...";
+
+    try {
+        const response = await fetch('http://127.0.0.1:5000/generate-qa', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+});
+
+        
+        const result = await response.json();
+
+        if(result.response){
+            conversation.push({user: queryText, bot: result.response});
+            output.textContent = conversation
+                .map(c => `User: ${c.user}\nBot: ${c.bot}\n`)
+                .join("\n");
+        } else if(result.error){
+            output.textContent = "Error: " + result.error;
+        } else {
+            output.textContent = "No response received.";
+        }
+
+    } catch(err) {
+        output.textContent = "Error sending request: " + err;
+    }
+
+    // Clear only the query JSON box (keep user details)
+    document.getElementById('jsonInput').value = "";
+});
+</script>
+
+
+</body>
+</html>
